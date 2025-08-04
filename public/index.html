@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Online Chat</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #36393f;
+      color: white;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .chat {
+      background-color: #2f3136;
+      width: 400px;
+      height: 600px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .message {
+      margin-bottom: 10px;
+    }
+
+    .input {
+      padding: 10px;
+      background-color: #40444b;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      background-color: #303339;
+      border: none;
+      color: white;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat">
+    <div class="messages" id="messages"></div>
+    <div class="input">
+      <input type="text" id="messageInput" placeholder="Type a message...">
+    </div>
+  </div>
+
+  <!-- Change the URL below to your real backend host -->
+  <script src="https://your-backend-url.onrender.com/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io('https://your-backend-url.onrender.com');
+    const input = document.getElementById('messageInput');
+    const messages = document.getElementById('messages');
+
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && input.value.trim() !== '') {
+        socket.emit('chat message', input.value);
+        input.value = '';
+      }
+    });
+
+    socket.on('chat message', msg => {
+      const div = document.createElement('div');
+      div.className = 'message';
+      div.textContent = msg;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    });
+  </script>
+</body>
+</html>
